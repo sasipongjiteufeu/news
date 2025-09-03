@@ -1,0 +1,25 @@
+services:
+  # The MySQL Database Service
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_DATABASE=newsdb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=testpass123
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    ports:
+      # The default MySQL port is 3306
+      - "3306:3306"
+    volumes:
+      # A new named volume for MySQL data
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "user", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+# Declares the named volume for Docker to manage
+volumes:
+  mysql_data:

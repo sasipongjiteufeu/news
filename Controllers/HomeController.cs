@@ -12,17 +12,22 @@ namespace news.Controllers
         {
             _logger = logger;
         }
-
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        public IActionResult detailNews()
+        {
+            return View();
+        }
+        
+        public IActionResult add_news()
         {
             return View();
         }
 
+    
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

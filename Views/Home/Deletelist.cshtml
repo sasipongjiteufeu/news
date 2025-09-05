@@ -1,0 +1,46 @@
+﻿@model IEnumerable<news.Models.infoNews>
+
+@{
+    ViewData["Title"] = "Delete News";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Select a news article to permanently delete it and all its associated images.</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th style="width: 15%;">Published Date</th>
+                <th style="width: 25%;">Title</th>
+                <th>Content Snippet</th>
+                <th style="width: 10%; text-align: center;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.PublishedDate.ToString("yyyy-MM-dd")</td>
+                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                    <td>
+                        @{
+                            // Create a short preview of the content
+                            var maxLength = 150;
+                            var snippet = item.Content.Length > maxLength
+                            ? item.Content.Substring(0, maxLength) + "..."
+                            : item.Content;
+                        }
+                        @snippet
+                    </td>
+                    <td style="text-align: center;">
+                        <!-- This form will submit a POST request to the Delete action -->
+                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this news: \'@item.Title.Replace("'", "\\'")\'? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

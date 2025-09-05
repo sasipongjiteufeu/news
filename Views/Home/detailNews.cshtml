@@ -1,7 +1,86 @@
-﻿
+﻿@model news.Models.infoNews
 @{
-    ViewData["Title"] = "detailNews";
+    ViewData["Title"] = Model.Title; // Set the page title to the news title
 }
 
-<h1>detailNews</h1>
+<style>
+    /* A container to center the content and limit its width */
+    .news-detail-container {
+        max-width: 900px;
+        margin: 20px auto; /* Centers the container */
+        padding: 20px;
+    }
 
+    /* Style for the main headline image */
+    .headline-image {
+        width: 100%; /* Make image responsive */
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 25px; /* Space between image and content */
+    }
+
+    /* Style for the news content text */
+    .news-content {
+        line-height: 1.6;
+        font-size: 1.1em;
+        margin-bottom: 40px; /* Space between content and gallery */
+        white-space: pre-wrap; /* This will respect new lines and spaces in your content */
+    }
+
+    /* Style for the image gallery section */
+    .gallery-section h3 {
+        border-bottom: 2px solid #dee2e6;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .image-gallery {
+        display: flex;
+        overflow-x: auto; /* Allows horizontal scrolling if there are many images */
+        gap: 15px; /* Space between images */
+        padding-bottom: 15px; /* Adds some space for the scrollbar */
+    }
+
+    .gallery-image {
+        height: 150px; /* Fixed height for gallery images */
+        width: auto;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        flex-shrink: 0; /* Prevents images from shrinking */
+    }
+
+</style>
+
+<div class="news-detail-container">
+
+    <!-- 1. News Title -->
+    <h1 class="display-4">@Model.Title</h1>
+    <p class="text-muted">Published on @Model.PublishedDate.ToString("MMMM dd, yyyy")</p>
+    <hr />
+
+    <!-- 2. Headline Picture -->
+    @if (!string.IsNullOrEmpty(Model.ImgTitle))
+    {
+        <img src="@Model.ImgTitle" class="headline-image" alt="Headline image for @Model.Title">
+    }
+
+    <!-- 3. News Content -->
+    <div class="news-content">
+        @Model.Content
+    </div>
+
+    <!-- 4. Image Gallery at the bottom -->
+    @if (Model.Images != null && Model.Images.Any())
+    {
+        <div class="gallery-section">
+            <h3>คลังรูปภาพ (Image Gallery)</h3>
+            <div class="image-gallery">
+                @foreach (var image in Model.Images)
+                {
+                    <img src="@image.ImagePath" class="gallery-image" alt="News image content">
+                }
+            </div>
+        </div>
+    }
+
+</div>

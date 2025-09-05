@@ -1,11 +1,99 @@
-﻿@{
+﻿@model IEnumerable<news.Models.infoNews>
+@{
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Creates a responsive grid */
+        gap: 20px; /* Space between cards */
+        padding: 20px;
+        border: 2px solid orange; /* The orange border from your drawing */
+        border-radius: 5px;
+    }
+
+    .news-card {
+        border: 2px solid blue; /* The blue border for each card */
+        border-radius: 8px;
+        overflow: hidden; /* Ensures the image corners are rounded */
+        text-decoration: none; /* Removes underline from the link */
+        color: inherit; /* Uses the default text color */
+        display: flex; /* Use flexbox for better content alignment */
+        flex-direction: column; /* Stack content vertically */
+        transition: transform 0.2s; /* Adds a little hover effect */
+    }
+
+        .news-card:hover {
+            transform: scale(1.03); /* Slightly enlarges the card on hover */
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 150px; /* Fixed height for the image */
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+            border-bottom: 2px solid orange;
+        }
+
+    .news-card-content {
+        padding: 10px;
+        flex-grow: 1; /* Allows this section to grow and fill available space */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .news-card-title {
+        font-weight: bold;
+    }
+
+    /* New style for the content snippet */
+    .news-card-snippet {
+        font-size: 0.9em;
+        color: #495057;
+        margin-top: 8px;
+        flex-grow: 1; /* Pushes the date to the bottom */
+    }
+
+    .news-card-date {
+        font-size: 0.8em;
+        color: #6c757d; /* A muted grey color */
+        margin-top: 10px;
+    }
+
+</style>
+
 <div class="text-center">
-    <h2>
-        @ViewData["Title"]
-    </h2>
     <h1 class="display-4">News</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    
+</div>
+
+<!-- This is the container for all your news cards -->
+<div class="news-grid">
+    @foreach (var item in Model)
+    {
+        <!-- Each card is a link to the detail page -->
+        <a asp-action="detailNews" asp-route-id="@item.Id" class="news-card">
+
+            <!-- The image for the news title -->
+            <img src="@item.ImgTitle" alt="Image for @item.Title" />
+
+            <!-- A container for text content -->
+            <div class="news-card-content">
+                <!-- The title of the news -->
+                <h5 class="news-card-title">@item.Title</h5>
+
+                <!-- This is the new part for the content snippet -->
+                @{
+                    // Set the maximum length for the snippet
+                    var maxLength = 100;
+                    // Truncate the content if it's longer than maxLength
+                    var snippet = item.Content.Length > maxLength ? item.Content.Substring(0, maxLength) + "..." : item.Content;
+                }
+                <p class="news-card-snippet">@snippet</p>
+
+                <!-- The published date -->
+                <p class="news-card-date">@item.PublishedDate.ToString("MMMM dd, yyyy")</p>
+            </div>
+        </a>
+    }
 </div>

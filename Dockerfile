@@ -23,8 +23,13 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./news.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER root
+RUN mkdir -p /app/wwwroot/images
+RUN chown -R app /app/wwwroot/images
+USER app
 ENTRYPOINT ["dotnet", "news.dll"]

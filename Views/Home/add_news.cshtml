@@ -50,6 +50,101 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
- 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Preview for single headline image
+            const headlineInput = document.getElementById('NewsHeadlinePics');
+            const headlinePreviewContainer = document.getElementById('Headline-preview');
+
+            headlineInput.addEventListener('change', function (event) {
+                headlinePreviewContainer.innerHTML = ''; // Clear previous preview
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        let img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('img-thumbnail', 'm-2');
+                        img.style.maxHeight = '150px';
+                        headlinePreviewContainer.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Preview for multiple other pictures
+                 const otherPicsInput = document.getElementById('otherPics');
+            const otherPicsPreviewContainer = document.getElementById('otherPics-preview');
+
+            // This array will hold the files we intend to upload.
+            let fileStore = [];
+
+            // Function to redraw the previews and update the file input
+            function updatePreviewsAndFileInput() {
+                // 1. Clear the current previews
+                otherPicsPreviewContainer.innerHTML = '';
+
+                // 2. Create a new DataTransfer object. This is a browser mechanism
+                //    for holding files, which we'll use to update the input.
+                const dataTransfer = new DataTransfer();
+
+                // 3. Loop through our fileStore and create a preview for each file
+                fileStore.forEach((file, index) => {
+                    // Add the file to our DataTransfer object
+                    dataTransfer.items.add(file);
+
+                    // Create a container for the image and delete button
+                    const previewWrapper = document.createElement('div');
+                    previewWrapper.classList.add('position-relative', 'd-inline-block', 'm-2');
+
+                    // Create the image preview
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('img-thumbnail');
+                        img.style.maxHeight = '150px';
+                        previewWrapper.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+
+                    // Create the delete button
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = '&times;'; // A simple 'x' character for the icon
+                    deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute', 'top-0', 'end-0');
+                    deleteBtn.style.cssText = 'line-height: 1; padding: 0.2rem 0.4rem; border-radius: 50%;';
+
+                    // Add an event listener to the delete button
+                    deleteBtn.onclick = function(event) {
+                        event.preventDefault(); // Prevent any default button behavior
+                        // Remove the file from our store at the specified index
+                        fileStore.splice(index, 1);
+                        // Call this function again to refresh the UI
+                        updatePreviewsAndFileInput();
+                    };
+
+                    previewWrapper.appendChild(deleteBtn);
+                    otherPicsPreviewContainer.appendChild(previewWrapper);
+                });
+
+                // 4. Finally, update the actual file input's files property with our new list
+                otherPicsInput.files = dataTransfer.files;
+            }
+
+            // Listen for when the user selects new files
+            otherPicsInput.addEventListener('change', function (event) {
+                // Add the newly selected files to our fileStore array
+                for (const file of event.target.files) {
+                    fileStore.push(file);
+                }
+
+                // Update the UI
+                updatePreviewsAndFileInput();
+
+                // Clear the input's value. This is important to allow the 'change'
+                // event to fire again if the user selects the same file after deleting it.
+                this.value = '';
+            });
+        });
+    </script>
 }

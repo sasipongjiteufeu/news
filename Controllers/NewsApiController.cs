@@ -6,6 +6,7 @@ using news.Models;
 
 namespace news.Controllers
 {
+    // try something i lean from read doc
     [Route("api/[controller]")]
     [ApiController]
     public class NewsApiController : ControllerBase

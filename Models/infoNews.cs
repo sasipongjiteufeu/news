@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace news.Models
 {
     public class infoNews
@@ -15,7 +16,8 @@ namespace news.Models
     public class NewsImage
     {
         public int Id { get; set; }
-        
+
+        [ForeignKey("infoNews")]
         public int NewsId { get; set; }           // Foreign key 
         public string ImagePath { get; set; }     // or byte[] if storing in DB
 

@@ -11,7 +11,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
+    volumes:
+      # Format is: [path_on_your_pc]:[path_inside_the_container]
+      - ./uploaded-images:/app/wwwroot/images
   db:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
